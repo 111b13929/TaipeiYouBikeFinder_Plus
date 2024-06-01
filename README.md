@@ -52,26 +52,6 @@
 - YouBikeStation.java：YouBike 站點的資料模型類。
 - RetrofitClient.java：配置 Retrofit 客戶端。
 
-## 依賴項
-該專案使用以下依賴項：
-
-```groovy
-dependencies {
-    implementation 'androidx.appcompat:appcompat:1.7.0'
-    implementation 'com.google.android.material:material:1.12.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
-    implementation 'androidx.recyclerview:recyclerview:1.3.2'
-    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
-    implementation 'com.squareup.okhttp3:logging-interceptor:4.9.1'
-    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
-    implementation 'com.google.android.gms:play-services-maps:18.0.2'
-    implementation 'com.google.android.gms:play-services-location:21.0.1'
-}```
-
 ## 執行結果畫面
 
 主界面顯示所有 YouBike 站點的列表：
@@ -102,6 +82,27 @@ dependencies {
 
 ![撤銷刪除](screenshots/delete_station_screen.png)
 
+## 依賴項
+該專案使用以下依賴項：
+
+```groovy
+dependencies {
+    implementation 'androidx.appcompat:appcompat:1.7.0'
+    implementation 'com.google.android.material:material:1.12.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+    implementation 'androidx.recyclerview:recyclerview:1.3.2'
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.9.1'
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
+    implementation 'com.google.android.gms:play-services-maps:18.0.2'
+    implementation 'com.google.android.gms:play-services-location:21.0.1'
+}
 
 
-##如有任何問題或反饋，請聯繫專案維護者：[111B13929@mailst.cjcu.edu.tw]。
+
+
+如有任何問題或反饋，請聯繫專案維護者：[111B13929@mailst.cjcu.edu.tw]。
