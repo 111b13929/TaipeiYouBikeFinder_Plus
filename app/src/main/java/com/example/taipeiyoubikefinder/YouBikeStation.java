@@ -1,17 +1,26 @@
 package com.example.taipeiyoubikefinder;
 
 public class YouBikeStation {
-    private final String sno;       // 站點ID
-    private final String sna;       // 站點名稱
-    // 地址
-    private final int available_rent_bikes; // 可租車輛數
+    private final String sno;
+    private final String sna;
+    private final String sarea;
+    private final String ar;
+    private final int total;
+    private final int available_rent_bikes;
+    private final int available_return_bikes;
+    private final double lat; // 經度
+    private final double lng; // 緯度
 
-    public YouBikeStation(String s, String sno, String sna, int rentBikes, int available_rent_bikes) {
+    public YouBikeStation(String sno, String sna, String sarea, String ar, int total, int available_rent_bikes, int available_return_bikes, double lat, double lng) {
         this.sno = sno;
         this.sna = sna;
-        // 區域
-        // 總車輛數
+        this.sarea = sarea;
+        this.ar = ar;
+        this.total = total;
         this.available_rent_bikes = available_rent_bikes;
+        this.available_return_bikes = available_return_bikes;
+        this.lat = lat;
+        this.lng = lng;
     }
 
     public String getSno() {
@@ -22,8 +31,16 @@ public class YouBikeStation {
         return sna;
     }
 
+    public String getSarea() {
+        return sarea;
+    }
+
     public String getAr() {
-        return null;
+        return ar;
+    }
+
+    public int getTotal() {
+        return total;
     }
 
     public int getAvailableRentBikes() {
@@ -31,7 +48,14 @@ public class YouBikeStation {
     }
 
     public int getAvailableReturnBikes() {
-        // 可還車輛數
-        return 0;
+        return available_return_bikes;
+    }
+
+    public double getLat() {
+        return lat;
+    }
+
+    public double getLng() {
+        return lng;
     }
 }

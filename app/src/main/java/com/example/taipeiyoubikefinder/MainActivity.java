@@ -1,10 +1,11 @@
 package com.example.taipeiyoubikefinder;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -12,9 +13,15 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private SwipeRefreshLayout swipeRefreshLayout;
     private YouBikeAdapter adapter;
     private final List<YouBikeStation> stationList = new ArrayList<>();
-    private final List<YouBikeStation> filteredList = new ArrayList<>();
+    private FusedLocationProviderClient fusedLocationProviderClient;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -41,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
         swipeRefreshLayout.setOnRefreshListener(this::fetchStationData);
 
-        adapter = new YouBikeAdapter(this, filteredList, new YouBikeAdapter.OnItemClickListener() {
+        adapter = new YouBikeAdapter(this, stationList, new YouBikeAdapter.OnItemClickListener() {
             public void onItemClick(int position) {
                 onItemClicked(position);
             }
@@ -52,25 +59,13 @@ public class MainActivity extends AppCompatActivity {
         });
         recyclerView.setAdapter(adapter);
 
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+
         fetchStationData();
 
-        EditText searchBar = findViewById(R.id.searchBar);
-        searchBar.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                filterStations(s.toString());
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
-
         findViewById(R.id.addButton).setOnClickListener(this::onAddButtonClicked);
+
+        getLastKnownLocation();
     }
 
     private void fetchStationData() {
@@ -85,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null) {
                     stationList.clear();
                     stationList.addAll(response.body());
-                    filterStations("");
+                    adapter.updateData(stationList);
                 } else {
                     System.err.println("數據加載失敗：" + response.code());
                 }
@@ -99,20 +94,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void filterStations(String query) {
-        filteredList.clear();
-        if (query.isEmpty()) {
-            filteredList.addAll(stationList);
-        } else {
-            for (YouBikeStation station : stationList) {
-                if (station.getSna().toLowerCase().contains(query.toLowerCase())) {
-                    filteredList.add(station);
-                }
-            }
-        }
-        adapter.notifyDataSetChanged();
-    }
-
     @SuppressLint("NotifyDataSetChanged")
     private void onAddButtonClicked(View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -124,19 +105,27 @@ public class MainActivity extends AppCompatActivity {
         builder.setPositiveButton("新增", (dialog, which) -> {
             EditText editSno = customLayout.findViewById(R.id.editSno);
             EditText editSna = customLayout.findViewById(R.id.editSna);
+            @SuppressLint({"MissingInflatedId", "LocalSuppress"}) EditText editSarea = customLayout.findViewById(R.id.editSarea);
             EditText editAr = customLayout.findViewById(R.id.editAr);
+            @SuppressLint({"MissingInflatedId", "LocalSuppress"}) EditText editTotal = customLayout.findViewById(R.id.editTotal);
             EditText editRentBikes = customLayout.findViewById(R.id.editRentBikes);
             EditText editReturnBikes = customLayout.findViewById(R.id.editReturnBikes);
+            EditText editLat = customLayout.findViewById(R.id.editLat);
+            EditText editLng = customLayout.findViewById(R.id.editLng);
 
             String sno = editSno.getText().toString();
             String sna = editSna.getText().toString();
+            String sarea = editSarea.getText().toString();
             String ar = editAr.getText().toString();
+            int total = Integer.parseInt(editTotal.getText().toString());
             int rentBikes = Integer.parseInt(editRentBikes.getText().toString());
             int returnBikes = Integer.parseInt(editReturnBikes.getText().toString());
+            double lat = Double.parseDouble(editLat.getText().toString());
+            double lng = Double.parseDouble(editLng.getText().toString());
 
-            YouBikeStation newStation = new YouBikeStation(sno, sna, ar, rentBikes, returnBikes);
+            YouBikeStation newStation = new YouBikeStation(sno, sna, sarea, ar, total, rentBikes, returnBikes, lat, lng);
             stationList.add(newStation);
-            filterStations("");
+            adapter.updateData(stationList);
 
             Toast.makeText(this, "站點已新增", Toast.LENGTH_SHORT).show();
         });
@@ -148,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void onItemClicked(int position) {
-        YouBikeStation station = filteredList.get(position);
+        YouBikeStation station = stationList.get(position);
         Intent intent = new Intent(MainActivity.this, DetailActivity.class);
         intent.putExtra("sno", station.getSno());
         intent.putExtra("name", station.getSna());
@@ -165,9 +154,8 @@ public class MainActivity extends AppCompatActivity {
         builder.setMessage("確定要刪除此站點嗎？");
 
         builder.setPositiveButton("刪除", (dialog, which) -> {
-            YouBikeStation station = filteredList.get(position);
-            stationList.remove(station);
-            filterStations("");
+            stationList.remove(position);
+            adapter.updateData(stationList);
             Toast.makeText(this, "站點已刪除", Toast.LENGTH_SHORT).show();
         });
 
@@ -175,5 +163,47 @@ public class MainActivity extends AppCompatActivity {
 
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    private void getLastKnownLocation() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+            return;
+        }
+        fusedLocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
+            @Override
+            public void onComplete(@NonNull Task<Location> task) {
+                if (task.isSuccessful() && task.getResult() != null) {
+                    Location location = task.getResult();
+                    fetchNearbyStations(location.getLatitude(), location.getLongitude());
+                }
+            }
+        });
+    }
+
+    private void fetchNearbyStations(double latitude, double longitude) {
+        List<YouBikeStation> nearbyStations = new ArrayList<>();
+        for (YouBikeStation station : stationList) {
+            double stationLat = station.getLat();
+            double stationLng = station.getLng();
+            float[] results = new float[1];
+            Location.distanceBetween(latitude, longitude, stationLat, stationLng, results);
+            float distance = results[0];
+            if (distance <= 1000) { // 以1公里為範圍
+                nearbyStations.add(station);
+            }
+        }
+        adapter.updateData(nearbyStations);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 1) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                getLastKnownLocation();
+            }
+        }
     }
 }

@@ -14,7 +14,8 @@ import java.util.List;
 
 public class YouBikeAdapter extends RecyclerView.Adapter<YouBikeAdapter.ViewHolder> {
     private final Context context;
-    private final List<YouBikeStation> stations;
+    private List<YouBikeStation> stations;
+    private final OnItemClickListener listener;
 
     public YouBikeAdapter(Context context, List<YouBikeStation> stations, OnItemClickListener listener) {
         this.context = context;
@@ -27,7 +28,10 @@ public class YouBikeAdapter extends RecyclerView.Adapter<YouBikeAdapter.ViewHold
         void onItemLongClick(int position);
     }
 
-    private final OnItemClickListener listener;
+    public void updateData(List<YouBikeStation> newStations) {
+        this.stations = newStations;
+        notifyDataSetChanged();
+    }
 
     @NonNull
     @Override

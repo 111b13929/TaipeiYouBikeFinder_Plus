@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -10,42 +8,62 @@
         android:id="@+id/editSno"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="站點ID"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        tools:ignore="Autofill,HardcodedText,TextFields" />
+        android:hint="站點編號"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
     <EditText
         android:id="@+id/editSna"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="站點名稱"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        tools:ignore="Autofill,HardcodedText,TextFields" />
+        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+    <EditText
+        android:id="@+id/editSarea"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="區域名稱"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
     <EditText
         android:id="@+id/editAr"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="地址"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        tools:ignore="Autofill,HardcodedText,TextFields" />
+        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+    <EditText
+        android:id="@+id/editTotal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="總車位數"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
     <EditText
         android:id="@+id/editRentBikes"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="可租車輛數量"
-        android:inputType="number"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        tools:ignore="Autofill,HardcodedText" />
+        android:hint="可租借車數"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
     <EditText
         android:id="@+id/editReturnBikes"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="可還車輛數量"
-        android:inputType="number"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        tools:ignore="Autofill,HardcodedText" />
+        android:hint="可歸還車數"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
+    <EditText
+        android:id="@+id/editLat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="緯度"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+    <EditText
+        android:id="@+id/editLng"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="經度"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 </LinearLayout>
