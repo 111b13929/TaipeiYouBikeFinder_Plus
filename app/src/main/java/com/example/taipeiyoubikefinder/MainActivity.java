@@ -26,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private YouBikeAdapter adapter;
     private final List<YouBikeStation> stationList = new ArrayList<>();
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,12 +39,10 @@ public class MainActivity extends AppCompatActivity {
         swipeRefreshLayout.setOnRefreshListener(this::fetchStationData);
 
         adapter = new YouBikeAdapter(this, stationList, new YouBikeAdapter.OnItemClickListener() {
-            @Override
             public void onItemClick(int position) {
                 onItemClicked(position);
             }
 
-            @Override
             public void onItemLongClick(int position) {
                 onItemLongClicked(position);
             }
@@ -81,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private void onAddButtonClicked(View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("新增站點");
@@ -89,11 +89,11 @@ public class MainActivity extends AppCompatActivity {
         builder.setView(customLayout);
 
         builder.setPositiveButton("新增", (dialog, which) -> {
-            @SuppressLint({"MissingInflatedId", "LocalSuppress"}) EditText editSno = customLayout.findViewById(R.id.editSno);
-            @SuppressLint({"MissingInflatedId", "LocalSuppress"}) EditText editSna = customLayout.findViewById(R.id.editSna);
-            @SuppressLint({"MissingInflatedId", "LocalSuppress"}) EditText editAr = customLayout.findViewById(R.id.editAr);
-            @SuppressLint({"MissingInflatedId", "LocalSuppress"}) EditText editRentBikes = customLayout.findViewById(R.id.editRentBikes);
-            @SuppressLint({"MissingInflatedId", "LocalSuppress"}) EditText editReturnBikes = customLayout.findViewById(R.id.editReturnBikes);
+            EditText editSno = customLayout.findViewById(R.id.editSno);
+            EditText editSna = customLayout.findViewById(R.id.editSna);
+            EditText editAr = customLayout.findViewById(R.id.editAr);
+            EditText editRentBikes = customLayout.findViewById(R.id.editRentBikes);
+            EditText editReturnBikes = customLayout.findViewById(R.id.editReturnBikes);
 
             String sno = editSno.getText().toString();
             String sna = editSna.getText().toString();
@@ -101,8 +101,9 @@ public class MainActivity extends AppCompatActivity {
             int rentBikes = Integer.parseInt(editRentBikes.getText().toString());
             int returnBikes = Integer.parseInt(editReturnBikes.getText().toString());
 
-            YouBikeStation newStation = new YouBikeStation(sno, sna, returnBikes);
-            adapter.addStation(newStation);
+            YouBikeStation newStation = new YouBikeStation(sno, sna, ar, rentBikes, returnBikes);
+            stationList.add(newStation);
+            adapter.notifyDataSetChanged();
 
             Toast.makeText(this, "站點已新增", Toast.LENGTH_SHORT).show();
         });
@@ -124,13 +125,15 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private void onItemLongClicked(int position) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("刪除站點");
         builder.setMessage("確定要刪除此站點嗎？");
 
         builder.setPositiveButton("刪除", (dialog, which) -> {
-            adapter.removeStation(position);
+            stationList.remove(position);
+            adapter.notifyDataSetChanged();
             Toast.makeText(this, "站點已刪除", Toast.LENGTH_SHORT).show();
         });
 

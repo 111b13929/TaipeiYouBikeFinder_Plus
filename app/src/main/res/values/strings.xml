@@ -6,4 +6,6 @@
     <string name="network_error">網絡錯誤：%1$s</string>
     <string name="selected_station">選中: %1$s</string>
     <string name="refresh_prompt">下拉刷新數據</string>
+    <string name="youbike_stations">YouBike Stations</string>
+    <string name="add_station">新增站點</string>
 </resources>

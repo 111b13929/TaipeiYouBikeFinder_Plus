@@ -6,7 +6,7 @@ public class YouBikeStation {
     // 地址
     private final int available_rent_bikes; // 可租車輛數
 
-    public YouBikeStation(String sno, String sna, int available_rent_bikes) {
+    public YouBikeStation(String s, String sno, String sna, int rentBikes, int available_rent_bikes) {
         this.sno = sno;
         this.sna = sna;
         // 區域
