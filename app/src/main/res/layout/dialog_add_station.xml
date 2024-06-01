@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp">
+
+    <EditText
+        android:id="@+id/editSno"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="站點編號" />
+
+    <EditText
+        android:id="@+id/editSna"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="站點名稱" />
+
+    <EditText
+        android:id="@+id/editAr"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="站點位置" />
+
+    <EditText
+        android:id="@+id/editRentBikes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="可租車輛數量"
+        android:inputType="number" />
+
+    <EditText
+        android:id="@+id/editReturnBikes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="可還車輛數量"
+        android:inputType="number" />
+
+</LinearLayout>

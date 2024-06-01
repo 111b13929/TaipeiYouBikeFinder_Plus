@@ -6,8 +6,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.List;
 
 public class YouBikeAdapter extends RecyclerView.Adapter<YouBikeAdapter.ViewHolder> {
@@ -35,19 +37,37 @@ public class YouBikeAdapter extends RecyclerView.Adapter<YouBikeAdapter.ViewHold
         holder.availableBikes.setText(context.getString(R.string.available_bikes, station.getAvailableRentBikes()));
         holder.location.setText(station.getAr());
 
+        // 設置點擊事件處理
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, DetailActivity.class);
+            intent.putExtra("sno", station.getSno());
             intent.putExtra("name", station.getSna());
             intent.putExtra("location", station.getAr());
             intent.putExtra("availableRentBikes", station.getAvailableRentBikes());
             intent.putExtra("availableReturnBikes", station.getAvailableReturnBikes());
             context.startActivity(intent);
         });
+
+        // 設置長按事件處理（用於刪除）
+        holder.itemView.setOnLongClickListener(v -> {
+            listener.onItemLongClick(position);
+            return true;
+        });
     }
 
     @Override
     public int getItemCount() {
         return stations.size();
+    }
+
+    public void addStation(YouBikeStation station) {
+        stations.add(station);
+        notifyItemInserted(stations.size() - 1);
+    }
+
+    public void removeStation(int position) {
+        stations.remove(position);
+        notifyItemRemoved(position);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -72,5 +92,6 @@ public class YouBikeAdapter extends RecyclerView.Adapter<YouBikeAdapter.ViewHold
 
     public interface OnItemClickListener {
         void onItemClick(int position);
+        void onItemLongClick(int position);
     }
 }
