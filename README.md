@@ -78,10 +78,6 @@ Taipei YouBike Finder是一款安卓應用程式，旨在幫助用戶查找台�
 
 ![附近站點](screenshots/nearby_stations_screen.png)
 
-撤銷刪除：
-
-![撤銷刪除](screenshots/delete_station_screen.png)
-
 ## 依賴項
 該專案使用以下依賴項：
 
