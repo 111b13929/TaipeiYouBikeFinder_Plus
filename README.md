@@ -73,25 +73,33 @@ dependencies {
 }
 
 ## 執行結果畫面
+
 主界面顯示所有 YouBike 站點的列表：
+
 ![主界面](screenshots/main_screen.png)
 
 點選某個站點顯示詳細資訊：
+
 ![詳細資訊](screenshots/detail_screen.png)
 
 搜索站點：
+
 ![搜索站點](screenshots/search_screen.png)
 
 新增新站點：
+
 ![新增站點](screenshots/add_station_screen.png)
 
 刪除站點：
+
 ![刪除站點](screenshots/add_station_screen.png)
 
 查看附近站點：
+
 ![附近站點](screenshots/nearby_stations_screen.png)
 
 撤銷刪除：
+
 ![撤銷刪除](screenshots/delete_station_screen.png)
 
 
