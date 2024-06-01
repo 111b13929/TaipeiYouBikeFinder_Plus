@@ -8,4 +8,8 @@
     <string name="refresh_prompt">下拉刷新數據</string>
     <string name="youbike_stations">YouBike Stations</string>
     <string name="add_station">新增站點</string>
+    <string name="StaNum">站點編號</string>
+    <string name="StaName">站點名稱</string>
+    <string name="StaAdd">地址</string>
+    <string name="StaUndo">復原</string>
 </resources>
