@@ -86,7 +86,7 @@ dependencies {
 ![新增站點](screenshots/add_station_screen.png)
 
 刪除站點：
-![刪除站點](screenshots/delete_station_screen.png)
+![刪除站點](screenshots/add_station_screen.png)
 
 查看附近站點：
 ![附近站點](screenshots/nearby_stations_screen.png)
