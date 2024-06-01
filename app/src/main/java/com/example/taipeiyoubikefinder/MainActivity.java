@@ -6,20 +6,27 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,16 +63,58 @@ public class MainActivity extends AppCompatActivity {
             public void onItemLongClick(int position) {
                 onItemLongClicked(position);
             }
+
         });
         recyclerView.setAdapter(adapter);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
         fetchStationData();
 
-        findViewById(R.id.addButton).setOnClickListener(this::onAddButtonClicked);
-        findViewById(R.id.undoButton).setOnClickListener(this::onUndoButtonClicked);
-
         getLastKnownLocation();
+
+        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+
+        navigationView.setNavigationItemSelectedListener(item -> {
+            int id = item.getItemId();
+            if (id == R.id.nav_show_all) {
+                onShowAllButtonClicked(null);
+            } else if (id == R.id.nav_show_nearby) {
+                onShowNearbyButtonClicked(null);
+            } else if (id == R.id.nav_add_station) {
+                onAddButtonClicked();
+            } else if (id == R.id.nav_undo) {
+                // Handle undo action here
+            }
+            drawerLayout.closeDrawer(GravityCompat.START);
+            return true;
+        });
+
+        EditText searchBar = findViewById(R.id.searchBar);
+
+        searchBar.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // 在這裡不需要做任何事情
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // 當文字改變時，過濾站點列表
+                filterStations(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // 在這裡不需要做任何事情
+            }
+        });
     }
 
     private void fetchStationData() {
@@ -95,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    private void onAddButtonClicked(View view) {
+    private void onAddButtonClicked() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("新增站點");
 
@@ -161,18 +210,6 @@ public class MainActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    private void onUndoButtonClicked(View view) {
-        if (!deletedStations.isEmpty()) {
-            YouBikeStation restoredStation = deletedStations.pop();
-            stationList.add(restoredStation);
-            adapter.updateData(stationList);
-            Toast.makeText(this, "站點已復原", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(this, "沒有可以復原的站點", Toast.LENGTH_SHORT).show();
-        }
-    }
-
     private void getLastKnownLocation() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -210,5 +247,24 @@ public class MainActivity extends AppCompatActivity {
                 getLastKnownLocation();
             }
         }
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private void onShowAllButtonClicked(View view) {
+        adapter.updateData(stationList);
+    }
+
+    private void onShowNearbyButtonClicked(View view) {
+        getLastKnownLocation();
+    }
+
+    private void filterStations(String query) {
+        List<YouBikeStation> filteredStations = new ArrayList<>();
+        for (YouBikeStation station : stationList) {
+            if (station.getSna().toLowerCase().contains(query.toLowerCase())) {
+                filteredStations.add(station);
+            }
+        }
+        adapter.updateData(filteredStations);
     }
 }

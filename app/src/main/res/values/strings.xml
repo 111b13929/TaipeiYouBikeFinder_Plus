@@ -12,4 +12,7 @@
     <string name="StaName">站點名稱</string>
     <string name="StaAdd">地址</string>
     <string name="StaUndo">復原</string>
+    <string name="StaAll">顯示所有站點</string>
+    <string name="navigation_drawer_open">打開導航抽屜</string>
+    <string name="navigation_drawer_close">關閉導航抽屜</string>
 </resources>
