@@ -3,6 +3,8 @@ package com.example.taipeiyoubikefinder;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -25,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private SwipeRefreshLayout swipeRefreshLayout;
     private YouBikeAdapter adapter;
     private final List<YouBikeStation> stationList = new ArrayList<>();
+    private final List<YouBikeStation> filteredList = new ArrayList<>();
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -38,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
         swipeRefreshLayout.setOnRefreshListener(this::fetchStationData);
 
-        adapter = new YouBikeAdapter(this, stationList, new YouBikeAdapter.OnItemClickListener() {
+        adapter = new YouBikeAdapter(this, filteredList, new YouBikeAdapter.OnItemClickListener() {
             public void onItemClick(int position) {
                 onItemClicked(position);
             }
@@ -50,6 +53,22 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
 
         fetchStationData();
+
+        EditText searchBar = findViewById(R.id.searchBar);
+        searchBar.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                filterStations(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
 
         findViewById(R.id.addButton).setOnClickListener(this::onAddButtonClicked);
     }
@@ -66,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null) {
                     stationList.clear();
                     stationList.addAll(response.body());
-                    adapter.notifyDataSetChanged();
+                    filterStations("");
                 } else {
                     System.err.println("數據加載失敗：" + response.code());
                 }
@@ -78,6 +97,20 @@ public class MainActivity extends AppCompatActivity {
                 System.err.println("網絡錯誤：" + t.getMessage());
             }
         });
+    }
+
+    private void filterStations(String query) {
+        filteredList.clear();
+        if (query.isEmpty()) {
+            filteredList.addAll(stationList);
+        } else {
+            for (YouBikeStation station : stationList) {
+                if (station.getSna().toLowerCase().contains(query.toLowerCase())) {
+                    filteredList.add(station);
+                }
+            }
+        }
+        adapter.notifyDataSetChanged();
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -103,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
 
             YouBikeStation newStation = new YouBikeStation(sno, sna, ar, rentBikes, returnBikes);
             stationList.add(newStation);
-            adapter.notifyDataSetChanged();
+            filterStations("");
 
             Toast.makeText(this, "站點已新增", Toast.LENGTH_SHORT).show();
         });
@@ -115,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void onItemClicked(int position) {
-        YouBikeStation station = stationList.get(position);
+        YouBikeStation station = filteredList.get(position);
         Intent intent = new Intent(MainActivity.this, DetailActivity.class);
         intent.putExtra("sno", station.getSno());
         intent.putExtra("name", station.getSna());
@@ -132,8 +165,9 @@ public class MainActivity extends AppCompatActivity {
         builder.setMessage("確定要刪除此站點嗎？");
 
         builder.setPositiveButton("刪除", (dialog, which) -> {
-            stationList.remove(position);
-            adapter.notifyDataSetChanged();
+            YouBikeStation station = filteredList.get(position);
+            stationList.remove(station);
+            filterStations("");
             Toast.makeText(this, "站點已刪除", Toast.LENGTH_SHORT).show();
         });
 
