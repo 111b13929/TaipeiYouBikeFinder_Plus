@@ -93,4 +93,7 @@ dependencies {
 
 撤銷刪除：
 ![撤銷刪除](screenshots/delete_station_screen.png)
-如有任何問題或反饋，請聯繫專案維護者：[111B13929@gmail.com 或 erl1235509@gmail.com]。
+
+
+
+##如有任何問題或反饋，請聯繫專案維護者：[111B13929@gmail.com]。
