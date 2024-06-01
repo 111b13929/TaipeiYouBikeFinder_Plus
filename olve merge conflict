@@ -1,0 +1,16 @@
+[1mdiff --git a/app/build.gradle b/app/build.gradle[m
+[1mindex e743105..18749e8 100644[m
+[1m--- a/app/build.gradle[m
+[1m+++ b/app/build.gradle[m
+[36m@@ -36,9 +36,4 @@[m [mdependencies {[m
+     testImplementation 'junit:junit:4.13.2'[m
+     androidTestImplementation 'androidx.test.ext:junit:1.1.5'[m
+     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'[m
+[31m-    implementation 'androidx.recyclerview:recyclerview:1.3.2'[m
+[31m-    implementation 'com.squareup.retrofit2:retrofit:2.9.0'[m
+[31m-    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'[m
+[31m-    implementation 'com.squareup.okhttp3:logging-interceptor:4.9.1'[m
+[31m-    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'[m
+[31m-}[m
+[32m+[m[32m}[m
+\ No newline at end of file[m

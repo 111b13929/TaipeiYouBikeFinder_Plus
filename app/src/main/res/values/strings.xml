@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Taipei YouBike Finder</string>
+    <string name="available_bikes">可用車輛: %1$d</string>
+    <string name="error_loading_data">數據加載失敗：%1$d</string>
+    <string name="network_error">網絡錯誤：%1$s</string>
+    <string name="selected_station">選中: %1$s</string>
+    <string name="refresh_prompt">下拉刷新數據</string>
+</resources>
